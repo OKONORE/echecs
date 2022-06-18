@@ -60,6 +60,54 @@ def pos_cavalier(liste, pos):
                     pos_cavalier2.append(pos2)
             return pos_cavalier2            
 
+def pos_fou(liste, pos):
+    pos_fou = []
+
+    def test_fou(id_fou):
+        if id_fou == 1: # test_fou(1)
+            return (pos[0] + tour, pos[1] + tour)
+        if id_fou == 2: # test_fou(2)
+            return (pos[0] - tour , pos[1] + tour)
+        
+    # diagonale bas droite
+    tour = 1
+    while piece_pos(liste, test_fou(1)) == "." and pos_valide(liste, test_fou(1)):
+        pos_fou.append(test_fou(1))
+        tour += 1
+    if pos_valide(liste, test_fou(1)):
+        if ((piece_pos(liste, test_fou(1)).isupper() and piece_pos(liste, pos).islower()) or 
+            (piece_pos(liste, test_fou(1)).islower() and piece_pos(liste, pos).isupper())):
+            pos_fou.append(test_fou(1))    
+    # diagonale haut gauche
+    tour = -1
+    while piece_pos(liste, test_fou(1)) == "." and pos_valide(liste, test_fou(1)): 
+        pos_fou.append(test_fou(1))
+        tour -= 1
+    if pos_valide(liste, test_fou(1)):
+        if ((piece_pos(liste, test_fou(1)).isupper() and piece_pos(liste, pos).islower()) or 
+            (piece_pos(liste, test_fou(1)).islower() and piece_pos(liste, pos).isupper())):
+            pos_fou.append(test_fou(1))
+    
+        # horizontale haute
+    tour = 1
+    while piece_pos(liste, test_fou(2)) == "." and pos_valide(liste, test_fou(2)):
+        pos_fou.append(test_fou(2))
+        tour += 1
+    if pos_valide(liste, test_fou(2)):
+        if ((piece_pos(liste, test_fou(2)).isupper() and piece_pos(liste, pos).islower()) or 
+            (piece_pos(liste, test_fou(2)).islower() and piece_pos(liste, pos).isupper())):
+            pos_fou.append(test_fou(2))    
+    # horizontale basse
+    tour = -1
+    while piece_pos(liste, test_fou(2)) == "." and pos_valide(liste, test_fou(2)): 
+        pos_fou.append(test_fou(2))
+        tour -= 1
+    if pos_valide(liste, test_fou(2)):
+        if ((piece_pos(liste, test_fou(2)).isupper() and piece_pos(liste, pos).islower()) or 
+            (piece_pos(liste, test_fou(2)).islower() and piece_pos(liste, pos).isupper())):
+            pos_fou.append(test_fou(2))
+    return pos_fou
+
 def pos_tour(liste, pos):
     pos_tour = []
 
@@ -108,8 +156,6 @@ def pos_tour(liste, pos):
             pos_tour.append(test_tour(2))
     return pos_tour
 
-    
-
 def mouvement_valide(liste, mouvement):
     piece = piece_pos(liste, mouvement[0])
     if mouvement[0] == mouvement[1]:
@@ -117,8 +163,14 @@ def mouvement_valide(liste, mouvement):
     elif piece in "Cc": 
         if mouvement[1] in pos_cavalier(liste, mouvement[0]):
             return True
+    elif piece in "Ff": 
+        if mouvement[1] in pos_fou(liste, mouvement[0]):
+            return True
     elif piece in "Tt":
         if mouvement[1] in pos_tour(liste, mouvement[0]):
+            return True
+    elif piece in "Dd": 
+        if mouvement[1] in pos_fou(liste, mouvement[0]).extend(pos_cavalier(liste, mouvement[0])):
             return True
     return False
 
@@ -130,12 +182,13 @@ def mouvement_piece(liste, mouvement):
         print("Mouvement " + str(mouvement) + " Invalide")
     return liste
 
+
+
 def main():
     default_ligne_vide      = "........"
     default_ligne_piecesN   = "tcfdrfct"
     default_ligne_piecesB   = "tcfrdfct"
     default_ligne_pions     = "pppppppp"
-    test_ligne              = "........"
 
     default_plateau = [ 
         [ [x] for x in default_ligne_piecesB.upper() ],
@@ -149,23 +202,24 @@ def main():
     ]
 
     test_plateau = [
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_pions ],
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_vide ],
-         [ [x] for x in default_ligne_vide ],
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 0
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 1
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 2
+         [["."],["."],["."],["D"],["."],["."],["."],["."],], # 3
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 4
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 5
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 6
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 7
+           #0    #1    #2    #3    #4    #5    #6    #7
     ]
     plateau = test_plateau
 
     actions_mouvements = [
-    #    ((3, 3), (3, 4)),
+        #((3, 3), (3, 4)),
     ]
     for id_mouvement in range(len(actions_mouvements)):
         plateau = mouvement_piece(plateau, actions_mouvements[id_mouvement])
         print_tableau(plateau)
         print("Tour: "+str(id_mouvement))
-    
+    print(pos_fou(plateau, (3,3))+ pos_tour(plateau, (3,3))) 
 main()
