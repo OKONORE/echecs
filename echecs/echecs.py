@@ -156,10 +156,36 @@ def pos_tour(liste, pos):
             pos_tour.append(test_tour(2))
     return pos_tour
 
+def pos_dame(liste, pos):
+    pos_dame = pos_fou(liste, pos) + pos_tour(liste, pos)
+    return pos_dame
+
+def pos_pion(liste, pos):
+    pos_pion = []
+    print(piece_pos(liste, pos))
+    if piece_pos(liste, pos) == "P":
+        if piece_pos(liste, (pos[0] + 1, pos[1])) == ".":
+            pos_pion.append((pos[0] + 1, pos[1]))
+        if piece_pos(liste, (pos[0] + 1, pos[1] + 1)).islower():
+            pos_pion.append((pos[0] + 1, pos[1] + 1))
+        if piece_pos(liste, (pos[0] + 1, pos[1] - 1 )).islower():
+            pos_pion.append((pos[0] + 1, pos[1] - 1))
+    if piece_pos(liste, pos) == "p":
+        if piece_pos(liste, (pos[0] - 1, pos[1])) == ".":
+            pos_pion.append((pos[0] - 1, pos[1]))
+        if piece_pos(liste, (pos[0] - 1, pos[1] + 1)).isupper():
+            pos_pion.append((pos[0] - 1, pos[1] + 1))
+        if piece_pos(liste, (pos[0] - 1, pos[1] - 1 )).isupper():
+            pos_pion.append((pos[0] - 1, pos[1] - 1))
+    return pos_pion
+
 def mouvement_valide(liste, mouvement):
     piece = piece_pos(liste, mouvement[0])
     if mouvement[0] == mouvement[1]:
         return False
+    elif piece in "Pp":
+        if mouvement[1] in pos_pion(liste, mouvement[0]):
+            return True
     elif piece in "Cc": 
         if mouvement[1] in pos_cavalier(liste, mouvement[0]):
             return True
@@ -170,7 +196,7 @@ def mouvement_valide(liste, mouvement):
         if mouvement[1] in pos_tour(liste, mouvement[0]):
             return True
     elif piece in "Dd": 
-        if mouvement[1] in pos_fou(liste, mouvement[0]).extend(pos_cavalier(liste, mouvement[0])):
+        if mouvement[1] in pos_dame(liste, mouvement[0]):
             return True
     return False
 
@@ -181,8 +207,6 @@ def mouvement_piece(liste, mouvement):
     else:
         print("Mouvement " + str(mouvement) + " Invalide")
     return liste
-
-
 
 def main():
     default_ligne_vide      = "........"
@@ -205,7 +229,7 @@ def main():
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 0
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 1
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 2
-         [["."],["."],["."],["D"],["."],["."],["."],["."],], # 3
+         [["."],["."],["."],["P"],["."],["."],["."],["."],], # 3
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 4
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 5
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 6
@@ -215,11 +239,10 @@ def main():
     plateau = test_plateau
 
     actions_mouvements = [
-        #((3, 3), (3, 4)),
+       #((3, 3), (4, 3)),
     ]
     for id_mouvement in range(len(actions_mouvements)):
         plateau = mouvement_piece(plateau, actions_mouvements[id_mouvement])
         print_tableau(plateau)
         print("Tour: "+str(id_mouvement))
-    print(pos_fou(plateau, (3,3))+ pos_tour(plateau, (3,3))) 
 main()
