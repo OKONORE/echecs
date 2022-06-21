@@ -179,6 +179,15 @@ def pos_pion(liste, pos):
             pos_pion.append((pos[0] - 1, pos[1] - 1))
     return pos_pion
 
+def check_check(liste):
+    for id_ligne in len(liste):
+        for id_colonne in len(liste[0]):
+            pos = (id_ligne, id_colonne)
+            Rois = [] # {"R": (x, y)}
+            if piece_pos(liste, pos) in "Rr":
+                if piece_pos(liste, pos) == "R": Rois += {"R": (pos)}
+                if piece_pos(liste, pos) == "r": Rois += {"r": (pos)}
+
 def mouvement_valide(liste, mouvement):
     piece = piece_pos(liste, mouvement[0])
     if mouvement[0] == mouvement[1]:
@@ -229,7 +238,7 @@ def main():
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 0
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 1
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 2
-         [["."],["."],["."],["P"],["."],["."],["."],["."],], # 3
+         [["."],["."],["."],["."],["."],["."],["."],["."],], # 3
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 4
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 5
          [["."],["."],["."],["."],["."],["."],["."],["."],], # 6
