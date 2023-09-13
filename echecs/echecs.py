@@ -1,8 +1,8 @@
 class Piece:
-    def __init__(self, Type: str, Couleur: str):
+    def __init__(self, Type: str, Couleur: str, Orientation: tuple(int, int)):
         self.Type = Type
         self.Couleur = Couleur
-
+        self.Orientation = Orientation
     def valeur(self):
         valeurs = {
             "Pion":1,
@@ -17,7 +17,7 @@ class Piece:
         return None
 
     def deplacer(self, position, echequier):
-        pass
+        if self.Type = Pion:
 
 class Echequier:
     def __init__(self, taille_cote):
